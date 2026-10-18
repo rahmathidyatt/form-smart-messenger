@@ -1,0 +1,42 @@
+{
+  "name_code": {
+    "id": null,
+    "title": "NAMA DAN KODE AGENT"
+  },
+  "unit": {
+    "id": null,
+    "title": "UNIT"
+  },
+  "date": {
+    "id": null,
+    "title": "TANGGAL PENGERJAAN"
+  },
+  "address": {
+    "id": null,
+    "title": "ALAMAT LENGKAP PENUGASAN (Blok dan Nomor Rumah)"
+  },
+  "task": {
+    "id": null,
+    "title": "TUGAS YANG DIBERIKAN KE MESSENGER"
+  },
+  "other": {
+    "id": null,
+    "title": "TUGAS LAINNYA (JIKA TUGAS TIDAK ADA DI LIST ATAS)"
+  },
+  "owner": {
+    "id": null,
+    "title": "APAKAH SUDAH KONFIRMASI PEMILIK/OWNER"
+  },
+  "email": {
+    "id": null,
+    "title": "EMAIL PEMESAN WEBSITE"
+  },
+  "request_id": {
+    "id": null,
+    "title": "ID PENGAJUAN WEBSITE"
+  },
+  "details": {
+    "id": null,
+    "title": "DETAIL WEBSITE"
+  }
+}
