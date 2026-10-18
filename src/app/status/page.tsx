@@ -1,2 +1,2 @@
-import {StatusForm} from "@/components/status-form";
-export default function Page(){return <StatusForm/>}
+import { redirect } from "next/navigation";
+export default function StatusPage(){redirect("/");}
