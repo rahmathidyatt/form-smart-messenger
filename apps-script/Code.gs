@@ -100,7 +100,7 @@ function buildResponse_(r) {
  const fields={name_code:p.name+' ('+p.code+')',unit:p.unit,date:p.date,address:p.address,task:SERVICES[p.task],other:p.other,owner:p.owner,email:p.email,request_id:r.id,details:JSON.stringify({source:'website',maps:p.maps,consent:true,consentVersion:CONSENT_VERSION,emailVerification:'self_declared',receivedAt:r.createdAt})};
  let response=form.createResponse();
  Object.keys(fields).forEach(key=>{const item=item_(form,mapping[key]),type=String(item.getType());
-  const expected={name_code:['TEXT','PARAGRAPH_TEXT'],unit:['LIST','MULTIPLE_CHOICE'],date:['DATE'],address:['TEXT','PARAGRAPH_TEXT'],task:['LIST','MULTIPLE_CHOICE','CHECKBOX'],other:['TEXT','PARAGRAPH_TEXT'],owner:['LIST','MULTIPLE_CHOICE'],email:['TEXT'],request_id:['TEXT'],details:['PARAGRAPH_TEXT']};
+  const expected={name_code:['TEXT','PARAGRAPH_TEXT'],unit:['LIST','MULTIPLE_CHOICE'],date:['DATE'],address:['TEXT','PARAGRAPH_TEXT'],task:['LIST','MULTIPLE_CHOICE','CHECKBOX'],other:['TEXT','PARAGRAPH_TEXT'],owner:['LIST','MULTIPLE_CHOICE','CHECKBOX'],email:['TEXT'],request_id:['TEXT'],details:['PARAGRAPH_TEXT']};
   if(!expected[key].includes(type))fail_('FORM_SCHEMA');
   if(fields[key]!=='' || cast_(item).isRequired())response=response.withItemResponse(responseFor_(item,fields[key]));
  });
