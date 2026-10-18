@@ -45,9 +45,9 @@ function validate_(raw,checkDate) {
  if(!raw||typeof raw!=='object'||Array.isArray(raw))fail_('VALIDATION');
  const keys=['email','name','code','unit','date','address','maps','task','other','owner','consent'];
  if(Object.keys(raw).some(k=>!keys.includes(k))||Object.keys(raw).length!==keys.length)fail_('VALIDATION');
- const d={email:text_(raw.email,3,254).toLowerCase(),name:text_(raw.name,2,120),code:text_(raw.code,1,30),unit:text_(raw.unit,1,50),date:text_(raw.date,10,10),address:text_(raw.address,10,1500),maps:text_(raw.maps,0,1000),task:text_(raw.task,1,30),other:text_(raw.other,0,1000),owner:raw.owner,consent:raw.consent};
+ const d={email:text_(raw.email,3,254).toLowerCase(),name:text_(raw.name,1,180),code:text_(raw.code,0,30),unit:text_(raw.unit,1,50),date:text_(raw.date,10,10),address:text_(raw.address,1,1500),maps:text_(raw.maps,0,1000),task:text_(raw.task,1,30),other:text_(raw.other,0,1000),owner:raw.owner,consent:raw.consent};
  if(/^[-–—]+$/.test(d.maps))d.maps='';
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)||!/^[-a-zA-Z0-9]+$/.test(d.code)||!UNITS.includes(d.unit)||!Object.prototype.hasOwnProperty.call(SERVICES,d.task)||!['YA','TIDAK'].includes(d.owner)||d.consent!==true)fail_('VALIDATION');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)||!/^[-a-zA-Z0-9]*$/.test(d.code)||!UNITS.includes(d.unit)||!Object.prototype.hasOwnProperty.call(SERVICES,d.task)||!['YA','TIDAK'].includes(d.owner)||d.consent!==true)fail_('VALIDATION');
  const date=new Date(d.date+'T00:00:00Z');if(!/^\d{4}-\d{2}-\d{2}$/.test(d.date)||!Number.isFinite(date.getTime())||date.toISOString().slice(0,10)!==d.date)fail_('VALIDATION');
  if(checkDate&&d.date<Utilities.formatDate(new Date(),'Asia/Jakarta','yyyy-MM-dd'))fail_('VALIDATION');
  if(d.task==='other'&&!d.other)fail_('VALIDATION');
@@ -97,7 +97,7 @@ function buildResponse_(r) {
  const ids=Object.keys(mapping).map(k=>mapping[k].id);
  form.getItems().forEach(item=>{const type=String(item.getType());if(['IMAGE','VIDEO','PAGE_BREAK','SECTION_HEADER'].includes(type))return;const typed=cast_(item);if(typed.isRequired()&&!ids.includes(item.getId()))fail_('FORM_SCHEMA');});
  const p=r.payload;
- const fields={name_code:p.name+' ('+p.code+')',unit:p.unit,date:p.date,address:p.address,task:SERVICES[p.task],other:p.other,owner:p.owner,email:p.email,request_id:r.id,details:JSON.stringify({source:'website',maps:p.maps,consent:true,consentVersion:CONSENT_VERSION,emailVerification:'self_declared',receivedAt:r.createdAt})};
+ const fields={name_code:p.code?p.name+' ('+p.code+')':p.name,unit:p.unit,date:p.date,address:p.address,task:SERVICES[p.task],other:p.other,owner:p.owner,email:p.email,request_id:r.id,details:JSON.stringify({source:'website',maps:p.maps,consent:true,consentVersion:CONSENT_VERSION,emailVerification:'self_declared',receivedAt:r.createdAt})};
  let response=form.createResponse();
  Object.keys(fields).forEach(key=>{const item=item_(form,mapping[key]),type=String(item.getType());
   const expected={name_code:['TEXT','PARAGRAPH_TEXT'],unit:['LIST','MULTIPLE_CHOICE'],date:['DATE'],address:['TEXT','PARAGRAPH_TEXT'],task:['LIST','MULTIPLE_CHOICE','CHECKBOX'],other:['TEXT','PARAGRAPH_TEXT'],owner:['LIST','MULTIPLE_CHOICE','CHECKBOX'],email:['TEXT'],request_id:['TEXT'],details:['PARAGRAPH_TEXT']};

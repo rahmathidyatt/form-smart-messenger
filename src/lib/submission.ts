@@ -3,11 +3,11 @@ import { units, services } from "./catalog";
 import { jakartaDate } from "./utils";
 const baseOrderSchema = z.object({
  email:z.string().trim().email("Isi alamat email yang valid.").max(254).transform(v=>v.toLowerCase()),
- name:z.string().trim().min(2,"Isi nama agent.").max(120),
- code:z.string().trim().regex(/^[a-zA-Z0-9-]{1,30}$/, "Isi kode PA, gunakan huruf/angka/tanda hubung."),
+ name:z.string().trim().min(1,"Isi nama dan kode agent.").max(180),
+ code:z.string().trim().regex(/^[a-zA-Z0-9-]{0,30}$/, "Isi kode PA, gunakan huruf/angka/tanda hubung."),
  unit:z.string().refine(v=>units.some(u=>u===v),"Pilih unit Brighton."),
  date:z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Pilih tanggal pengerjaan.").refine(v=>{const d=new Date(v+"T00:00:00Z");return Number.isFinite(d.getTime())&&d.toISOString().slice(0,10)===v;},"Tanggal tidak valid."),
- address:z.string().trim().min(10,"Lengkapi alamat, blok dan nomor rumah.").max(1500),
+ address:z.string().trim().min(1,"Isi alamat lengkap.").max(1500),
  maps:z.string().trim().max(1000).transform(v=>/^[-–—]+$/.test(v)?"":v).refine(v=>{if(!v)return true;try{const u=new URL(v);return u.protocol==="https:"&&["maps.app.goo.gl","maps.google.com","google.com","www.google.com","goo.gl"].includes(u.hostname);}catch{return false;}},"Kosongkan kolom ini atau masukkan tautan Google Maps yang valid."),
  task:z.string().refine(v=>services.some(s=>s.id===v),"Pilih tugas messenger."),
  other:z.string().trim().max(1000),

@@ -11,10 +11,10 @@ export async function bridge(action:string,data:unknown={}){
  const body=JSON.stringify({action,data}),ts=Date.now(),nonce=randomUUID();
  let result:Response;
  try{result=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ts,nonce,body,signature:signature(secret,ts,nonce,body)}),signal:AbortSignal.timeout(25000),cache:"no-store",redirect:"follow"});}catch{throw new ServiceError("UPSTREAM_UNKNOWN");}
- if(!result.ok)throw new ServiceError("UPSTREAM_UNKNOWN");
- let parsed;try{parsed=await result.json();}catch{throw new ServiceError("UPSTREAM_UNKNOWN");}
+ if(!result.ok){console.error("SmartMessenger gateway HTTP",result.status);throw new ServiceError("UPSTREAM_UNKNOWN");}
+ let parsed;try{parsed=await result.json();}catch{console.error("SmartMessenger gateway response is not JSON; check deployment access and URL");throw new ServiceError("UPSTREAM_UNKNOWN");}
  if(!parsed||typeof parsed.ok!=="boolean")throw new ServiceError("UPSTREAM_UNKNOWN");
- if(!parsed.ok){const known:Record<string,number>={NOT_FOUND:404,CONFLICT:409,VALIDATION:400,RATE_LIMIT:429,UNAUTHORIZED:403};throw new ServiceError(parsed.code in known?parsed.code:"UPSTREAM_UNKNOWN",known[parsed.code]??503);}
+ if(!parsed.ok){console.error("SmartMessenger gateway rejected request", typeof parsed.code==="string"&&/^[A-Z_]{1,40}$/.test(parsed.code)?parsed.code:"UNKNOWN");const known:Record<string,number>={NOT_FOUND:404,CONFLICT:409,VALIDATION:400,RATE_LIMIT:429,UNAUTHORIZED:403};throw new ServiceError(parsed.code in known?parsed.code:"UPSTREAM_UNKNOWN",known[parsed.code]??503);}
  return parsed.data;
 }
 export function checkOrigin(req:Request){const origin=process.env.APP_ORIGIN;if(!origin||req.headers.get("origin")!==new URL(origin).origin)throw new ServiceError("ORIGIN",403);}
